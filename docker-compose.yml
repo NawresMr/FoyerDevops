@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: nawres1011
+      MYSQL_DATABASE: foyer
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - foyer-network
+
+  springboot:
+    build: .
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/foyer?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: nawres1011
+    ports:
+      - "8081:8081"
+    networks:
+      - foyer-network
+
+networks:
+  foyer-network:
+
+volumes:
+  mysql_data:

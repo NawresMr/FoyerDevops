@@ -6,10 +6,10 @@ services:
       MYSQL_ROOT_PASSWORD: nawres1011
       MYSQL_DATABASE: foyer
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+
     networks:
       - foyer-network
 

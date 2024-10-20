@@ -6,7 +6,7 @@ services:
       MYSQL_ROOT_PASSWORD: nawres1011
       MYSQL_DATABASE: foyer
     ports:
-      - "3307:3306"
+      - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -30,7 +30,7 @@ services:
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
     ports:
-      - "9001:9000"
+      - "9002:9000"
     volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_logs:/opt/sonarqube/logs

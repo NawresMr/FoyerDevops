@@ -19,7 +19,7 @@ import java.time.LocalDate;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ReservationServiceTest {
+ class ReservationServiceTest {
 
     @Autowired
     private ReservationService reservationService;
@@ -63,7 +63,7 @@ public class ReservationServiceTest {
 
     @Test
     @Rollback(value = false) // Pour ne pas annuler les transactions
-    public void testAddOrUpdateReservation() {
+     void testAddOrUpdateReservation() {
         // Créer une réservation
         Reservation reservation = new Reservation();
         reservation.setAnneeUniversitaire(LocalDate.now());
@@ -81,7 +81,7 @@ public class ReservationServiceTest {
 
     @Test
     @Rollback(value = false)
-    public void testAjouterReservationEtAssignerAChambreEtAEtudiant() {
+     void testAjouterReservationEtAssignerAChambreEtAEtudiant() {
         // Ajouter une réservation et l'assigner à la chambre et à l'étudiant
         Long numChambre = chambre.getNumeroChambre();
         long cin = etudiant.getCin();
@@ -96,7 +96,7 @@ public class ReservationServiceTest {
 
     @Test
     @Rollback(value = false)
-    public void testAnnulerReservation() {
+     void testAnnulerReservation() {
         // Créer une réservation
         Reservation reservation = new Reservation();
         reservation.setAnneeUniversitaire(LocalDate.now());
@@ -115,7 +115,7 @@ public class ReservationServiceTest {
 
     @Test
     @Rollback(value = false)
-    public void testAnnulerReservations() {
+     void testAnnulerReservations() {
         // Créer plusieurs réservations
         for (int i = 0; i < 3; i++) {
             Reservation reservation = new Reservation();

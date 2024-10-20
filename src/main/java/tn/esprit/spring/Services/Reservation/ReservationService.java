@@ -1,5 +1,6 @@
 package tn.esprit.spring.Services.Reservation;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import tn.esprit.spring.DAO.Repositories.ReservationRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -35,8 +37,19 @@ public class ReservationService implements IReservationService {
 
     @Override
     public Reservation findById(String id) {
-        return repo.findById(id).get();
+        // Retrieve the Optional<Reservation>
+        Optional<Reservation> optionalReservation = repo.findById(id);
+
+        // Check if the Reservation is present
+        if (optionalReservation.isPresent()) {
+            return optionalReservation.get(); // Safely access the Reservation object
+        } else {
+            // Handle the case where the Reservation is not found
+            throw new EntityNotFoundException("Reservation not found with id: " + id);
+            // Alternatively, you could return null or throw a custom exception
+        }
     }
+
 
     @Override
     public void deleteById(String id) {
@@ -56,7 +69,6 @@ public class ReservationService implements IReservationService {
         // Début "récuperer l'année universitaire actuelle"
         LocalDate dateDebutAU;
         LocalDate dateFinAU;
-        int numReservation;
         int year = LocalDate.now().getYear() % 100;
         if (LocalDate.now().getMonthValue() <= 7) {
             dateDebutAU = LocalDate.of(Integer.parseInt("20" + (year - 1)), 9, 15);
@@ -71,8 +83,8 @@ public class ReservationService implements IReservationService {
         Etudiant e = etudiantRepository.findByCin(cin);
         boolean ajout = false;
         int numRes = chambreRepository.countReservationsByIdChambreAndReservationsAnneeUniversitaireBetween(c.getIdChambre(), dateDebutAU, dateFinAU);
-        //int numRes = chambreRepository.listerReservationPourUneChambre(c.getIdChambre(), dateDebutAU, dateFinAU);
-        System.err.println(numRes);
+        log.info("Number of reservations: {}", numRes);
+
         switch (c.getTypeC()) {
             case SIMPLE:
                 if (numRes < 1) {
@@ -99,8 +111,6 @@ public class ReservationService implements IReservationService {
         if (ajout) {
             res.setEstValide(false);
             res.setAnneeUniversitaire(LocalDate.now());
-            // AU-BLOC-NumChambre-CIN --> Exemple: 2023/2024-Bloc A-1-123456789
-            //res.setIdReservation(c.getNumeroChambre() + "-" + c.getBloc().getNomBloc() + "-" + e.getCin());
             res.setIdReservation(dateDebutAU.getYear() + "/" + dateFinAU.getYear() + "-" + c.getBloc().getNomBloc() + "-" + c.getNumeroChambre() + "-" + e.getCin());
             res.getEtudiants().add(e);
             res.setEstValide(true);
@@ -128,20 +138,26 @@ public class ReservationService implements IReservationService {
 
     @Override
     public void affectReservationAChambre(String idRes, long idChambre) {
-        Reservation r = repo.findById(idRes).get();
-        Chambre c = chambreRepository.findById(idChambre).get();
-        // Parent: Chambre , Child: Reservation
+        // Retrieve the reservation safely
+        Reservation r = repo.findById(idRes)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found for id: " + idRes));
+
+        // Retrieve the chambre safely
+        Chambre c = chambreRepository.findById(idChambre)
+                .orElseThrow(() -> new IllegalArgumentException("Chambre not found for id: " + idChambre));
+
+        // Parent: Chambre, Child: Reservation
         // On affecte le child au parent
         c.getReservations().add(r);
         chambreRepository.save(c);
     }
+
 
     @Override
     public void annulerReservations() {
         // Début "récuperer l'année universitaire actuelle"
         LocalDate dateDebutAU;
         LocalDate dateFinAU;
-        int numReservation;
         int year = LocalDate.now().getYear() % 100;
         if (LocalDate.now().getMonthValue() <= 7) {
             dateDebutAU = LocalDate.of(Integer.parseInt("20" + (year - 1)), 9, 15);

@@ -11,6 +11,8 @@ import tn.esprit.spring.DAO.Repositories.FoyerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -48,7 +50,12 @@ public class BlocService implements IBlocService {
 
     @Override
     public Bloc findById(long id) {
-        return repo.findById(id).get();
+        Optional<Bloc> optionalBloc = repo.findById(id);
+        if (optionalBloc.isPresent()) {
+            return optionalBloc.get();
+        } else {
+            throw new NoSuchElementException("Bloc with id " + id + " not found");
+        }
     }
 
     @Override
@@ -75,7 +82,7 @@ public class BlocService implements IBlocService {
             chambres.add(chambre);
         }
         // Keyword (2ème méthode)
-        //chambres=chambreRepository.findAllByNumeroChambre(numChambre);
+
         //2 Parent==>Chambre  Child==> Bloc
         for (Chambre cha : chambres) {
             //3 On affecte le child au parent

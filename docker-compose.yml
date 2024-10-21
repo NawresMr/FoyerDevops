@@ -1,3 +1,5 @@
+version: '3.8'  # Version du fichier de composition
+
 services:
   mysql:
     image: mysql:8.0
@@ -5,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: nawres1011
       MYSQL_DATABASE: foyer
     ports:
-      - "3308:3306"
+      - "3308:3306"  # Exposer le port 3306 à l'extérieur via 3308
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -15,12 +17,13 @@ services:
     build: .
     depends_on:
       - mysql
+    command: ["./wait-for-it.sh", "mysql:3306", "java", "-jar", "app.jar"]
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/foyer?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: nawres1011
     ports:
-      - "8081:8081"
+      - "8081:8080"  # Mappage entre le port externe 8081 et le port interne 8080
     networks:
       - foyer-network
 

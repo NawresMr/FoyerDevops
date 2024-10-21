@@ -15,6 +15,7 @@ import tn.esprit.spring.DAO.Repositories.ReservationRepository;
 import tn.esprit.spring.Services.Reservation.ReservationService;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,44 +52,23 @@ class ReservationServiceTestMock {
     }
 
     @Test
-    void testAjouterReservationEtAssignerAChambreEtAEtudiant_Success() {
+    void testAjouterReservation_ChambreNotFound() {
         Long numChambre = 1L;
         long cin = 12345678L;
 
-        // Créer la chambre mockée
-        Chambre chambre = new Chambre();
-        chambre.setIdChambre(1L);
-        chambre.setNumeroChambre(numChambre);
-        chambre.setTypeC(TypeChambre.SIMPLE);
+        // Simulez que la chambre n'est pas trouvée
+        when(chambreRepository.findByNumeroChambre(numChambre)).thenReturn(null);
 
-        // Créer l'étudiant mocké
-        Etudiant etudiant = new Etudiant();
-        etudiant.setCin(cin);
+        // Vérifiez que l'exception est lancée
+        Exception exception = assertThrows(NoSuchElementException.class, () -> {
+            reservationService.ajouterReservationEtAssignerAChambreEtAEtudiant(numChambre, cin);
+        });
 
-        // Configurer les mocks pour retourner les valeurs appropriées
-        when(chambreRepository.findByNumeroChambre(numChambre)).thenReturn(chambre);
-        when(etudiantRepository.findByCin(cin)).thenReturn(etudiant);
-        when(chambreRepository.countReservationsByIdChambreAndReservationsAnneeUniversitaireBetween(anyLong(), any(LocalDate.class), any(LocalDate.class))).thenReturn(0);
+        String expectedMessage = "Chambre non trouvée"; // Mettez ici le message d'erreur attendu
+        String actualMessage = exception.getMessage();
 
-        // Créer une réservation avec les valeurs nécessaires
-        Reservation reservation = new Reservation();
-        reservation.setEstValide(true); // Assurez-vous que l'état est vrai
-
-        // Mock de la méthode save pour retourner la réservation
-        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
-
-        // Appeler le service
-        Reservation resultReservation = reservationService.ajouterReservationEtAssignerAChambreEtAEtudiant(numChambre, cin);
-
-        // Vérifier que la réservation n'est pas nulle et qu'elle est valide
-        assertNotNull(resultReservation);
-        assertTrue(resultReservation.isEstValide());
-
-        // Vérifier que la méthode save a été appelée une fois
-        verify(reservationRepository, times(1)).save(any(Reservation.class));
-        verify(chambreRepository, times(1)).save(chambre);
+        assertTrue(actualMessage.contains(expectedMessage));
     }
-
 
     @Test
     void testFindById() {

@@ -98,7 +98,7 @@ import java.time.LocalDate;
 
     @Test
     @Rollback(value = false)
-     void testAnnulerReservation() {
+    void testAnnulerReservation() {
         // Créer une réservation
         Reservation reservation = new Reservation();
         reservation.setAnneeUniversitaire(LocalDate.now());
@@ -112,8 +112,13 @@ import java.time.LocalDate;
 
         // Vérifier que la réservation est annulée
         assertTrue(result.contains("annulée avec succès"));
+
+        // Re-fetch the reservation to validate its updated state
+        reservation = reservationRepository.findById(reservation.getIdReservation()).orElse(null);
+        assertNotNull(reservation);
         assertFalse(reservation.isEstValide());
     }
+
 
     @Test
     @Rollback(value = false)

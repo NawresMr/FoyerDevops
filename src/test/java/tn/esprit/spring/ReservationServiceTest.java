@@ -6,22 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import tn.esprit.spring.DAO.Entities.Chambre;
 import tn.esprit.spring.DAO.Entities.Etudiant;
 import tn.esprit.spring.DAO.Entities.Reservation;
-import tn.esprit.spring.DAO.Entities.TypeChambre;
-import tn.esprit.spring.DAO.Repositories.ChambreRepository;
 import tn.esprit.spring.DAO.Repositories.EtudiantRepository;
 import tn.esprit.spring.DAO.Repositories.ReservationRepository;
 import tn.esprit.spring.Services.Reservation.ReservationService;
 
 import java.time.LocalDate;
-
+import java.util.Optional;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
- class ReservationServiceTest {
+class ReservationServiceTest {
 
     @Autowired
     private ReservationService reservationService;
@@ -30,22 +27,12 @@ import java.time.LocalDate;
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private ChambreRepository chambreRepository;
-
-    @Autowired
     private EtudiantRepository etudiantRepository;
 
-    private Chambre chambre;
     private Etudiant etudiant;
 
     @BeforeAll
     void setUp() {
-        // Créer une chambre pour les tests
-        chambre = new Chambre();
-        chambre.setNumeroChambre(101);
-        chambre.setTypeC(TypeChambre.SIMPLE); // Correcte ici
-        chambreRepository.save(chambre);
-
         // Créer un étudiant pour les tests
         etudiant = new Etudiant();
         etudiant.setCin(123456);
@@ -54,23 +41,21 @@ import java.time.LocalDate;
         etudiantRepository.save(etudiant);
     }
 
-
     @AfterAll
     void tearDown() {
         // Nettoyer les données après les tests
         reservationRepository.deleteAll();
         etudiantRepository.deleteAll();
-        chambreRepository.deleteAll();
     }
 
     @Test
     @Rollback(value = false) // Pour ne pas annuler les transactions
-     void testAddOrUpdateReservation() {
+    void testAddReservation() {
         // Créer une réservation
         Reservation reservation = new Reservation();
+        reservation.setIdReservation("2023/2024-Bloc A-101-123456");
         reservation.setAnneeUniversitaire(LocalDate.now());
         reservation.setEstValide(false);
-        reservation.setIdReservation("2023/2024-Bloc A-101-123456");
         reservation.getEtudiants().add(etudiant);
 
         // Ajouter la réservation
@@ -78,12 +63,44 @@ import java.time.LocalDate;
 
         // Vérifier que la réservation est ajoutée
         assertNotNull(savedReservation);
-        assertEquals(savedReservation.getIdReservation(), reservation.getIdReservation());
+        assertEquals("2023/2024-Bloc A-101-123456", savedReservation.getIdReservation());
     }
 
+    @Test
+    void testGetReservationById() {
+        // Créer et sauvegarder une réservation
+        Reservation reservation = new Reservation();
+        reservation.setIdReservation("2023/2024-Bloc A-101-123456");
+        reservation.setAnneeUniversitaire(LocalDate.now());
+        reservation.setEstValide(false);
+        reservation.getEtudiants().add(etudiant);
+        reservationService.addOrUpdate(reservation);
 
+        // Récupérer la réservation par ID
+        Optional<Reservation> fetchedReservation = reservationRepository.findById("2023/2024-Bloc A-101-123456");
 
+        // Vérifier que la réservation est présente et que les données sont correctes
+        assertTrue(fetchedReservation.isPresent());
+        assertEquals(reservation.getIdReservation(), fetchedReservation.get().getIdReservation());
+    }
 
+    @Test
+    void testAnnulerReservation() {
+        // Créer et sauvegarder une réservation
+        Reservation reservation = new Reservation();
+        reservation.setIdReservation("2023/2024-Bloc A-101-123456");
+        reservation.setAnneeUniversitaire(LocalDate.now());
+        reservation.setEstValide(true);
+        reservation.getEtudiants().add(etudiant);
+        reservationService.addOrUpdate(reservation);
 
+        // Annuler la réservation
+        String result = reservationService.annulerReservation(etudiant.getCin());
 
+        // Vérifier que la réservation est annulée
+        assertTrue(result.contains("annulée avec succès"));
+        Optional<Reservation> canceledReservation = reservationRepository.findById(reservation.getIdReservation());
+        assertTrue(canceledReservation.isPresent());
+        assertFalse(canceledReservation.get().isEstValide());
+    }
 }

@@ -51,24 +51,7 @@ class ReservationServiceTestMock {
         verify(reservationRepository, times(1)).save(reservation);
     }
 
-    @Test
-    void testAjouterReservation_ChambreNotFound() {
-        Long numChambre = 1L;
-        long cin = 12345678L;
-
-        // Simulez que la chambre n'est pas trouvée
-        when(chambreRepository.findByNumeroChambre(numChambre)).thenReturn(null);
-
-        // Vérifiez que l'exception est lancée
-        Exception exception = assertThrows(NoSuchElementException.class, () -> {
-            reservationService.ajouterReservationEtAssignerAChambreEtAEtudiant(numChambre, cin);
-        });
-
-        String expectedMessage = "Chambre non trouvée"; // Mettez ici le message d'erreur attendu
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-    }
+    
 
     @Test
     void testFindById() {

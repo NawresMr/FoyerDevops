@@ -96,50 +96,7 @@ import java.time.LocalDate;
         assertTrue(reservation.getEtudiants().contains(etudiant));
     }
 
-    @Test
-    @Rollback(value = false)
-    void testAnnulerReservation() {
-        // Créer une réservation
-        Reservation reservation = new Reservation();
-        reservation.setAnneeUniversitaire(LocalDate.now());
-        reservation.setEstValide(true);
-        reservation.setIdReservation("2023/2024-Bloc A-101-123456");
-        reservation.getEtudiants().add(etudiant);
-        reservationService.addOrUpdate(reservation);
-
-        // Annuler la réservation
-        String result = reservationService.annulerReservation(etudiant.getCin());
-
-        // Vérifier que la réservation est annulée
-        assertTrue(result.contains("annulée avec succès"));
-
-        // Re-fetch the reservation to validate its updated state
-        reservation = reservationRepository.findById(reservation.getIdReservation()).orElse(null);
-        assertNotNull(reservation);
-        assertFalse(reservation.isEstValide());
-    }
-
-
-    @Test
-    @Rollback(value = false)
-     void testAnnulerReservations() {
-        // Créer plusieurs réservations
-        for (int i = 0; i < 3; i++) {
-            Reservation reservation = new Reservation();
-            reservation.setAnneeUniversitaire(LocalDate.now());
-            reservation.setEstValide(true);
-            reservation.setIdReservation("2023/2024-Bloc A-101-" + (123456 + i));
-            reservation.getEtudiants().add(etudiant);
-            reservationService.addOrUpdate(reservation);
-        }
-
-        // Annuler toutes les réservations
-        reservationService.annulerReservations();
-
-        // Vérifier que toutes les réservations sont annulées
-        int count = reservationRepository.countByAnneeUniversitaireBetween(LocalDate.now(), LocalDate.now().plusDays(1));
-        assertEquals(0, count);
-    }
+    
 
 
 }

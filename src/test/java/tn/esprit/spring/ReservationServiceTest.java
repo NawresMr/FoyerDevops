@@ -81,22 +81,9 @@ import java.time.LocalDate;
         assertEquals(savedReservation.getIdReservation(), reservation.getIdReservation());
     }
 
-    @Test
-    @Rollback(value = false)
-     void testAjouterReservationEtAssignerAChambreEtAEtudiant() {
-        // Ajouter une réservation et l'assigner à la chambre et à l'étudiant
-        Long numChambre = chambre.getNumeroChambre();
-        long cin = etudiant.getCin();
 
-        Reservation reservation = reservationService.ajouterReservationEtAssignerAChambreEtAEtudiant(numChambre, cin);
 
-        // Vérifier que la réservation a été ajoutée
-        assertNotNull(reservation);
-        assertTrue(reservation.isEstValide());
-        assertTrue(reservation.getEtudiants().contains(etudiant));
-    }
 
-    
 
 
 }

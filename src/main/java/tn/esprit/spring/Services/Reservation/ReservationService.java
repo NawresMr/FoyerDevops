@@ -15,6 +15,7 @@ import tn.esprit.spring.DAO.Repositories.ReservationRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -154,24 +155,19 @@ public class ReservationService implements IReservationService {
 
 
     @Override
-    public void annulerReservations() {
-        // Début "récuperer l'année universitaire actuelle"
-        LocalDate dateDebutAU;
-        LocalDate dateFinAU;
-        int year = LocalDate.now().getYear() % 100;
-        if (LocalDate.now().getMonthValue() <= 7) {
-            dateDebutAU = LocalDate.of(Integer.parseInt("20" + (year - 1)), 9, 15);
-            dateFinAU = LocalDate.of(Integer.parseInt("20" + year), 6, 30);
+    public void annulerReservations(String idReservation) {
+        // Check if the reservation exists
+        Optional<Reservation> optionalReservation = repo.findById(idReservation);
+        if (optionalReservation.isPresent()) {
+            // If exists, delete the reservation
+            repo.deleteById(idReservation);
         } else {
-            dateDebutAU = LocalDate.of(Integer.parseInt("20" + year), 9, 15);
-            dateFinAU = LocalDate.of(Integer.parseInt("20" + (year + 1)), 6, 30);
-        }
-        // Fin "récuperer l'année universitaire actuelle"
-        for (Reservation reservation : repo.findByEstValideAndAnneeUniversitaireBetween(true, dateDebutAU, dateFinAU)) {
-            reservation.setEstValide(false);
-            repo.save(reservation);
-            log.info("La reservation "+ reservation.getIdReservation()+" est annulée automatiquement");
+            // Handle case where reservation does not exist
+            throw new NoSuchElementException("Reservation not found with ID: " + idReservation);
         }
     }
+
+
+
 
 }

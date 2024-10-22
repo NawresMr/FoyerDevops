@@ -16,7 +16,7 @@ public interface IReservationService {
     String annulerReservation (long cinEtudiant) ;
 
     void affectReservationAChambre(String idRes,long idChambre);
-    void annulerReservations();
+    void annulerReservations(String idReservation);
 
 
 

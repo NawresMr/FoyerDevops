@@ -68,7 +68,7 @@ class ReservationServiceTestMock {
         verify(reservationRepository, times(1)).findById(id);
     }
 
-   
+
 
     @Test
     void testDeleteById() {
@@ -86,14 +86,21 @@ class ReservationServiceTestMock {
         Long numChambre = 101L;
         long cin = 123456;
 
+        Chambre chambre = new Chambre();
+        chambre.setNumeroChambre(numChambre);
+        chambre.setTypeC(TypeChambre.SIMPLE);  // Exemple d'attribut TypeChambre
+
+        Etudiant etudiant = new Etudiant();
+        etudiant.setCin(cin);
+
         Reservation reservation = new Reservation();
         reservation.setIdReservation("2023/2024-Bloc A-101-123456");
         reservation.setAnneeUniversitaire(LocalDate.now());
         reservation.setEstValide(true);
 
+        when(chambreRepository.findByNumeroChambre(numChambre)).thenReturn(chambre);
+        when(etudiantRepository.findByCin(cin)).thenReturn(etudiant);
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
-        when(chambreRepository.findById(numChambre)).thenReturn(Optional.of(new Chambre()));
-        when(etudiantRepository.findById(cin)).thenReturn(Optional.of(new Etudiant()));
 
         // Act
         Reservation result = reservationService.ajouterReservationEtAssignerAChambreEtAEtudiant(numChambre, cin);
@@ -101,6 +108,7 @@ class ReservationServiceTestMock {
         // Assert
         assertNotNull(result);
         assertTrue(result.isEstValide());
+        assertEquals(reservation.getIdReservation(), result.getIdReservation());
         verify(reservationRepository, times(1)).save(any(Reservation.class));
     }
 }

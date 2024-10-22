@@ -13,6 +13,8 @@ import tn.esprit.spring.DAO.Repositories.ReservationRepository;
 import tn.esprit.spring.Services.Reservation.ReservationService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -49,14 +51,14 @@ class ReservationServiceTest {
     }
 
     @Test
-    @Rollback(value = false) // Pour ne pas annuler les transactions
+    @Rollback(value = false)
     void testAddReservation() {
         // Créer une réservation
         Reservation reservation = new Reservation();
         reservation.setIdReservation("2023/2024-Bloc A-101-123456");
         reservation.setAnneeUniversitaire(LocalDate.now());
         reservation.setEstValide(false);
-        reservation.getEtudiants().add(etudiant);
+        reservation.getEtudiants().add(etudiant); // Assurez-vous que la liste est bien initialisée dans la classe Reservation
 
         // Ajouter la réservation
         Reservation savedReservation = reservationService.addOrUpdate(reservation);

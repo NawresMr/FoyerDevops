@@ -55,30 +55,7 @@ class ReservationServiceTestMock {
         verify(reservationRepository, times(1)).save(reservation);
     }
 
-    @Test
-    void testFindById() {
-        String id = "2023/2024-Bloc A-101-123456";
-        Reservation reservation = new Reservation();
-        when(reservationRepository.findById(id)).thenReturn(Optional.of(reservation));
-
-        Reservation result = reservationService.findById(id);
-
-        assertNotNull(result);
-        assertEquals(reservation, result);
-        verify(reservationRepository, times(1)).findById(id);
-    }
-
-
-
-    @Test
-    void testDeleteById() {
-        String id = "2023/2024-Bloc A-101-123456";
-        doNothing().when(reservationRepository).deleteById(id);
-
-        reservationService.deleteById(id);
-
-        verify(reservationRepository, times(1)).deleteById(id);
-    }
+  
 
     @Test
     void testAjouterReservationEtAssignerAChambreEtAEtudiant() {

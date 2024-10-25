@@ -4,18 +4,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import tn.esprit.spring.DAO.Entities.Chambre;
-import tn.esprit.spring.DAO.Entities.Etudiant;
-import tn.esprit.spring.DAO.Entities.Reservation;
-import tn.esprit.spring.DAO.Repositories.ChambreRepository;
-import tn.esprit.spring.DAO.Repositories.EtudiantRepository;
-import tn.esprit.spring.DAO.Repositories.ReservationRepository;
-import tn.esprit.spring.Services.Reservation.ReservationService;
+import tn.esprit.spring.dao.Entities.Chambre;
+import tn.esprit.spring.dao.Entities.Etudiant;
+import tn.esprit.spring.dao.Entities.Reservation;
+import tn.esprit.spring.dao.Repositories.ChambreRepository;
+import tn.esprit.spring.dao.Repositories.EtudiantRepository;
+import tn.esprit.spring.dao.Repositories.ReservationRepository;
+import tn.esprit.spring.services.Reservation.ReservationService;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

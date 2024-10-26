@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
 import tn.esprit.spring.dao.entities.Chambre;
 import tn.esprit.spring.dao.entities.Etudiant;
 import tn.esprit.spring.dao.entities.Reservation;

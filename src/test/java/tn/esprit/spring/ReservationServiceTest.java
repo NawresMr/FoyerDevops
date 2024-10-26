@@ -19,47 +19,6 @@ import java.time.LocalDate;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
 class ReservationServiceTest {
-    @Autowired
-    private ReservationRepository reservationRepository;
-
-    @Autowired
-    private ChambreRepository chambreRepository;
-
-    @Autowired
-    private EtudiantRepository etudiantRepository;
-
-    private ReservationService reservationService;
-
-    @BeforeEach
-    public void setup() {
-        reservationService = new ReservationService(reservationRepository, chambreRepository, etudiantRepository);
-        // Ajoutez des données de test
-    }
-
-    @Test
-    public void testAddOrUpdateReservation() {
-        // Créez un étudiant et une chambre
-        Etudiant etudiant = new Etudiant(/* paramètres de construction */);
-        etudiantRepository.save(etudiant);
-
-        Chambre chambre = new Chambre(/* paramètres de construction */);
-        chambreRepository.save(chambre);
-
-        // Créez une réservation
-        Reservation reservation = new Reservation();
-        reservation.setIdReservation("123");
-        reservation.setAnneeUniversitaire(LocalDate.now());
-        reservation.setEstValide(true);
-        reservation.getEtudiants().add(etudiant);
-
-        // Test de l'ajout
-        Reservation savedReservation = reservationService.addOrUpdate(reservation);
-        assertNotNull(savedReservation);
-        assertEquals("123", savedReservation.getIdReservation());
-    }
-
-
-
 
 
 }

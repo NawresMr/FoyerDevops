@@ -55,7 +55,7 @@ class ReservationServiceTestMock {
         verify(reservationRepository, times(1)).save(reservation);
     }
 
-  
+
 
     @Test
     void testAjouterReservationEtAssignerAChambreEtAEtudiant() {

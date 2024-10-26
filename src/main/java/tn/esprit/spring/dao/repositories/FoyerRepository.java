@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import tn.esprit.spring.dao.entities.Foyer;
 import tn.esprit.spring.dao.entities.TypeChambre;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface FoyerRepository extends JpaRepository<Foyer,Long> {
@@ -23,4 +24,7 @@ public interface FoyerRepository extends JpaRepository<Foyer,Long> {
     // que le type passé en paramétre
     // Foyer -- Bloc -- Chambre
     List<Foyer> getByBlocsChambresTypeC(TypeChambre typeChambre);
+
+
+
 }

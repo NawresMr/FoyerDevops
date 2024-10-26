@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import tn.esprit.spring.dao.entities.Chambre;
 import tn.esprit.spring.dao.entities.Etudiant;
 import tn.esprit.spring.dao.entities.Reservation;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+@SpringBootTest
 class ReservationServiceTestMock {
 
     @Mock
@@ -88,4 +89,7 @@ class ReservationServiceTestMock {
         assertEquals(reservation.getIdReservation(), result.getIdReservation());
         verify(reservationRepository, times(1)).save(any(Reservation.class));
     }
+
+
+
 }

@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
+
 import tn.esprit.spring.dao.entities.Chambre;
 import tn.esprit.spring.dao.entities.Etudiant;
 import tn.esprit.spring.dao.entities.Reservation;
@@ -17,7 +17,7 @@ import tn.esprit.spring.dao.repositories.ReservationRepository;
 import tn.esprit.spring.services.reservation.ReservationService;
 
 import java.time.LocalDate;
-import java.util.Optional;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

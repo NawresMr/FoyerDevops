@@ -40,6 +40,15 @@ services:
     networks:
       - foyer-network
 
+  nexus:
+    image: sonatype/nexus3
+    ports:
+      - "8084:8081"  # Expose Nexus on port 8084
+    volumes:
+      - nexus_data:/nexus-data
+    networks:
+      - foyer-network
+
 networks:
   foyer-network:
 
@@ -48,3 +57,4 @@ volumes:
   sonarqube_data:
   sonarqube_logs:
   sonarqube_extensions:
+  nexus_data:

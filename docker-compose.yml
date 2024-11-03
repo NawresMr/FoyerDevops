@@ -1,4 +1,4 @@
-version: '3.8'  # Version du fichier de composition
+version: '3.8'
 
 services:
   mysql:
@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: nawres1011
       MYSQL_DATABASE: foyer
     ports:
-      - "3308:3306"  # Exposer le port 3306 à l'extérieur via 3308
+      - "3308:3306"  # Expose MySQL on port 3308
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -23,29 +23,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: nawres1011
     ports:
-      - "8081:8080"  # Mappage entre le port externe 8081 et le port interne 8080
-    networks:
-      - foyer-network
-
-  sonarqube:
-    image: sonarqube
-    environment:
-      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
-    ports:
-      - "9004:9000"
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_logs:/opt/sonarqube/logs
-      - sonarqube_extensions:/opt/sonarqube/extensions
-    networks:
-      - foyer-network
-
-  nexus:
-    image: sonatype/nexus3
-    ports:
-      - "8084:8081"  # Expose Nexus on port 8084
-    volumes:
-      - nexus_data:/nexus-data
+      - "8081:8080"  # Expose Spring Boot on port 8081
     networks:
       - foyer-network
 
@@ -54,7 +32,3 @@ networks:
 
 volumes:
   mysql_data:
-  sonarqube_data:
-  sonarqube_logs:
-  sonarqube_extensions:
-  nexus_data:
